@@ -1,6 +1,8 @@
 # MutiCamera
 前后摄像头同时打开的拍照录制成mp4视频文件的demo, 同时演示了美颜,贴纸,滤镜等功能; 演示了对opengl es, mediacodec等api的使用
 
+<video src="demo.mp4">录屏演示</video>
+
 ## 演示的功能点  
 -- 前后摄像头同时开启   
 使用opengl es将前后两个摄像头得到的数据进行合并渲染, 使用了离屏渲染技术
