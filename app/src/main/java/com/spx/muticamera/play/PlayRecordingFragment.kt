@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
@@ -16,6 +17,7 @@ class PlayRecordingFragment : Fragment() {
     private val TAG = "tmf_PlayRecordingFragment"
     private var player: SimpleExoPlayer? = null
     private lateinit var playView: PlayerView;
+    private lateinit var backView: View;
     private lateinit var recordFilePath: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +36,7 @@ class PlayRecordingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        backView = view.findViewById(R.id.iv_back)
         playView = view.findViewById(R.id.video_view)
         playView.layoutParams.let {
             it.width = resources.displayMetrics.widthPixels
@@ -41,6 +44,10 @@ class PlayRecordingFragment : Fragment() {
             playView.layoutParams = it
         }
         initializePlayer();
+
+        backView.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     private fun initializePlayer() {

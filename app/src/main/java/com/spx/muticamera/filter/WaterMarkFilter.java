@@ -15,9 +15,9 @@ import java.io.InputStream;
  * 水印的Filter
  */
 
-public class WaterMarkFilter extends NoFilter{
-    private int x,y,w,h;
-    private int width,height;
+public class WaterMarkFilter extends NoFilter {
+    private int x, y, w, h;
+    private int width, height;
     private Bitmap mBitmap;
     private Bitmap mGifBitmap;
     private NoFilter mFilter;
@@ -30,31 +30,33 @@ public class WaterMarkFilter extends NoFilter{
         super(mRes);
         mLocation = location;
         mBitmap = BitmapFactory.decodeResource(mRes, drawableResId);
-        mFilter=new NoFilter(mRes){
-            @Override
-            protected void onClear() {
-            }
-        };
-    }
-    private boolean mIsGif = false;
-    private int mGifId;
-    private int mRotateDegree;
-    private Resources mResources;
-    public WaterMarkFilter(Resources res, boolean isGif, int bitRes, float rotateDegree) {
-        super(res);
-        mResources = res;
-        mGifId = bitRes;
-        mIsGif = isGif;
-        mRotateDegree = (int)rotateDegree;
-        mFilter=new NoFilter(mRes){
+        mFilter = new NoFilter(mRes) {
             @Override
             protected void onClear() {
             }
         };
     }
 
-    public void setWaterMark(Bitmap bitmap){
-        if(this.mBitmap!=null && !mBitmap.isRecycled()){
+    private boolean mIsGif = false;
+    private int mGifId;
+    private int mRotateDegree;
+    private Resources mResources;
+
+    public WaterMarkFilter(Resources res, boolean isGif, int bitRes, float rotateDegree) {
+        super(res);
+        mResources = res;
+        mGifId = bitRes;
+        mIsGif = isGif;
+        mRotateDegree = (int) rotateDegree;
+        mFilter = new NoFilter(mRes) {
+            @Override
+            protected void onClear() {
+            }
+        };
+    }
+
+    public void setWaterMark(Bitmap bitmap) {
+        if (this.mBitmap != null && !mBitmap.isRecycled()) {
             this.mBitmap.recycle();
             mBitmap = null;
         }
@@ -62,14 +64,18 @@ public class WaterMarkFilter extends NoFilter{
             mGifBitmap.recycle();
             mGifBitmap = null;
         }
-        this.mBitmap=bitmap;
+        this.mBitmap = bitmap;
     }
-    private long mStartTime,mEndTime;
-    public void setShowTime(long startTime,long endTime){
+
+    private long mStartTime, mEndTime;
+
+    public void setShowTime(long startTime, long endTime) {
         mStartTime = startTime;
         mEndTime = endTime;
     }
+
     private float[] mRotationMatrix = new float[16];
+
     @Override
     public void draw() {
 //        onUseProgram();
@@ -77,17 +83,18 @@ public class WaterMarkFilter extends NoFilter{
 //        onBindTexture();
 //        onDraw();
 //        GLES20.glViewport(546,900, 151, 259);
-        GLES20.glViewport(mLocation[0],mLocation[1], mLocation[2], mLocation[3]);
+        GLES20.glViewport(mLocation[0], mLocation[1], mLocation[2], mLocation[3]);
         blendFunc();
         mFilter.draw();
     }
+
     @Override
     public void draw(long time) {
         super.draw();
-        if(mIsGif){
+        if (mIsGif) {
             createTexture();
         }
-        if(time > mStartTime && time < mEndTime) {
+        if (time > mStartTime && time < mEndTime) {
             int i = (int) (mBitmap.getWidth() * 1.15);
             int i1 = (int) (mBitmap.getHeight() * 1.15);
             GLES20.glViewport(x, y, w == 0 ? i : w, h == 0 ? i1 : h);
@@ -115,18 +122,20 @@ public class WaterMarkFilter extends NoFilter{
 //        }
         createTexture();
     }
-    private int[] textures=new int[1];
+
+    private int[] textures = new int[1];
+
     private void createTexture() {
-        if(mBitmap!=null){
-            GLES20.glGenTextures(1,textures,0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textures[0]);
+        if (mBitmap != null) {
+            GLES20.glGenTextures(1, textures, 0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures[0]);
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-            if(!mIsGif) {
-                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0,  mBitmap, 0);
-            }else {
+            if (!mIsGif) {
+                GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mBitmap, 0);
+            } else {
                 mGifBitmap = mGifDecoder.nextBitmap();
                 if (mGifBitmap != null) {
                     GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, Bitmap.createBitmap(mGifBitmap, 0, 0, mGifBitmap.getWidth(), mGifBitmap.getHeight(), mMatrix, true), 0);
@@ -137,21 +146,24 @@ public class WaterMarkFilter extends NoFilter{
             mFilter.setTextureId(textures[0]);
         }
     }
-    public void setMatrix(Matrix matrix){
+
+    public void setMatrix(Matrix matrix) {
         mMatrix = matrix;
     }
+
     @Override
     protected void onSizeChanged(int width, int height) {
-        this.width=width;
-        this.height=height;
+        this.width = width;
+        this.height = height;
         /*GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA,GLES20.GL_ONE_MINUS_SRC_ALPHA);*/
-        mFilter.setSize(width,height);
+        mFilter.setSize(width, height);
     }
-    public void setPosition(int x,int y,int width,int height){
-        this.x=x;
-        this.y=y;
-        this.w=width;
-        this.h=height;
+
+    public void setPosition(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.w = width;
+        this.h = height;
     }
 }

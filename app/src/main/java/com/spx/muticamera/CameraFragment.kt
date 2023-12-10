@@ -27,6 +27,7 @@ class CameraFragment : Fragment(), OnTouchListener, SlideGpuFilterGroup.OnFilter
     private val TAG = "tmf_CameraFragment"
 
     private lateinit var mRecordCameraView: CameraView
+    private lateinit var mRecordCameraViewText: TextView
     private lateinit var mRecordButtonImageView: CustomRecordImageView
     private lateinit var mProcessingView: View
     private lateinit var mSwitchCamera: View
@@ -75,6 +76,7 @@ class CameraFragment : Fragment(), OnTouchListener, SlideGpuFilterGroup.OnFilter
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        GlobalSetting.reset()
         return inflater.inflate(R.layout.fragment_camera, container, false)
     }
 
@@ -82,13 +84,17 @@ class CameraFragment : Fragment(), OnTouchListener, SlideGpuFilterGroup.OnFilter
         super.onViewCreated(view, savedInstanceState)
         Log.i(TAG, "onViewCreated: ...")
         mRecordCameraView = view.findViewById(R.id.record_camera_view)
+        mRecordCameraViewText = view.findViewById(R.id.tv_record_button_text)
         mProcessingView = view.findViewById(R.id.processing_view)
         mRecordButtonImageView = view.findViewById(R.id.record_button)
         mSwitchCamera = view.findViewById(R.id.switch_camera)
-        mRecordButtonImageView.setOnTouchListener { v, event ->
-            handleRecordButtonTouch(v, event)
-            true
+        mRecordButtonImageView.setOnClickListener {
+            onRecordClicked();
         }
+//        mRecordButtonImageView.setOnTouchListener { v, event ->
+//            handleRecordButtonTouch(v, event)
+//            true
+//        }
         mRecordCameraView.setEncodeCallback { paths ->
             if (paths != null && !paths.isEmpty()) {
                 mRecordFiles = paths
@@ -151,25 +157,18 @@ class CameraFragment : Fragment(), OnTouchListener, SlideGpuFilterGroup.OnFilter
         }
     }
 
-    private fun handleRecordButtonTouch(v: View, event: MotionEvent) {
-//    Log.i(TAG, "onTouch: ...x:" + event.getX() + ",y:" + event.getY() + ", action:" + event.getAction());
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> onStartRecording()
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                mIsLongPressing = false
-                // 用户想删除
-                if (mIsInTakePhoto) {
-                    takePicture()
-                } else {
-                    if (System.currentTimeMillis() - mRecordStartTime < 1200) {
-                        simpleToast("拍摄时间太短, 请重新拍摄")
-                        // 只是结束拍摄, 不去操作的录制结果
-                        stopRecording()
-                    } else {
-                        onStopRecording()
-                    }
-                }
+    private fun onRecordClicked() {
+        if (isRecording) {
+            if (System.currentTimeMillis() - mRecordStartTime < 1200) {
+                simpleToast("拍摄时间太短, 请重新拍摄")
+                // 只是结束拍摄, 不去操作的录制结果
+                stopRecording()
+            } else {
+                onStopRecording()
             }
+            mRecordCameraViewText.text = "点击录制"
+        } else {
+            onStartRecording()
         }
     }
 
@@ -182,6 +181,7 @@ class CameraFragment : Fragment(), OnTouchListener, SlideGpuFilterGroup.OnFilter
         Log.i(TAG, "onStartRecording: storageMp4:${storageMp4}")
         mRecordCameraView.setSavePath(storageMp4)
         mRecordCameraView.startRecord()
+        mRecordCameraViewText.text = "再次点击停止录制"
     }
 
     private fun showProgressView() {

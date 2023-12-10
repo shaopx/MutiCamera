@@ -113,12 +113,12 @@ class CameraDrawer(context: Context, resources: Resources?) : GLSurfaceView.Rend
         smallWindowFilter = SmallWindowFilter(context, resources)
         waterMarkFilterO = WaterMarkFilter(
             resources,
-            R.drawable.vw_ic_uncheck,
+            R.drawable.ic_fireworks,
             intArrayOf(
                 front_camera_frame_x - 3,
                 front_camera_frame_y - 3,
                 front_camera_frame_width + 6,
-                front_camera_frame_height + 6
+                front_camera_frame_height + 300
             )
         )
         //        waterMarkFilter1 = new WaterMarkFilter(resources, R.drawable.ic_bubble_triangle, new int[]{650,1159, 42, 36});
@@ -272,6 +272,7 @@ class CameraDrawer(context: Context, resources: Resources?) : GLSurfaceView.Rend
             smallWindowFilter.setTextureId(frontCameraFilter.getOutputTexture());
         }
 
+
         GLES20.glViewport(0, 0, mPreviewWidth, mPreviewHeight);
         EasyGlUtils.bindFrameTexture(fFrame[0], fTexture[0]);
         backCameraDrawFilter.draw();
@@ -279,12 +280,14 @@ class CameraDrawer(context: Context, resources: Resources?) : GLSurfaceView.Rend
         if (enableMuticamera) {
             smallWindowFilter.draw();
         }
+        if(GlobalSetting.enableSticker){
+//            waterMarkFilterO.textureId = fTexture[0];
+            waterMarkFilterO.draw();
+        }
 
         EasyGlUtils.unBindFrameBuffer();
 
-//        waterMarkFilterO.textureId = 0;
-//        waterMarkFilterO.draw();
-//        waterMarkFilterO.outputTexture
+
 
         mBeFilter.setTextureId(fTexture[0]);
         mBeFilter.draw();

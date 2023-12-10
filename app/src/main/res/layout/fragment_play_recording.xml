@@ -7,7 +7,23 @@
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_alignParentTop="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         android:layout_alignParentTop="true"
-        />
+        android:background="#33000000">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_back" />
+    </RelativeLayout>
+
 
 </RelativeLayout>
