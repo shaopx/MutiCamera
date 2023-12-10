@@ -1,7 +1,10 @@
 # MutiCamera
 前后摄像头同时打开的拍照录制成mp4视频文件的demo, 同时演示了美颜,贴纸,滤镜等功能; 演示了对opengl es, mediacodec等api的使用
 
-<video src="demo.mp4">录屏演示</video>
+![screen1](https://github.com/shaopx/MutiCamera/blob/master/screencap/demo1.jpg "Magic Gardens")
+![screen2](https://github.com/shaopx/MutiCamera/blob/master/screencap/demo2.jpg "Magic Gardens")
+![screen3](https://github.com/shaopx/MutiCamera/blob/master/screencap/demo3.jpg "Magic Gardens")
+![screen4](https://github.com/shaopx/MutiCamera/blob/master/screencap/demo4.jpg "Magic Gardens")
 
 ## 演示的功能点  
 -- 前后摄像头同时开启   
